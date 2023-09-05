@@ -15,6 +15,7 @@ const client = new stytch.Client({
 
 const mclient=require('mongodb').MongoClient;
 
+
 mclient.connect('mongodb+srv://abhiram:6309422@cluster0.zgy92ci.mongodb.net/?retryWrites=true&w=majority')
     .then((dbRef)=>{
         //connect to a database
@@ -28,6 +29,7 @@ mclient.connect('mongodb+srv://abhiram:6309422@cluster0.zgy92ci.mongodb.net/?ret
     })
     .catch(err=>console.log("database connect error:",err));
 
+// cnct();
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
@@ -106,6 +108,8 @@ app.post('/add-event',verifyToken,async(req,res,next)=>{
     }
 })
 
+
+
 app.get('/show-slots',verifyToken,async(req,res,next)=>{
   try{
     const params ={
@@ -129,7 +133,7 @@ app.get('/show-slots',verifyToken,async(req,res,next)=>{
   }
 })
 
-app.post('/delete-slot',verifyToken,async (req,res,next)=>{
+app.post('/delete-slot',async()=>await cnct(),verifyToken,async (req,res,next)=>{
   try{
     const {date,slot } =req.body;
     const doc={date:date,slot:slot};
