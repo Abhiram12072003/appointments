@@ -15,25 +15,12 @@ const client = new stytch.Client({
 
 const mclient=require('mongodb').MongoClient;
 
-
-mclient.connect('mongodb+srv://abhiram:6309422@cluster0.zgy92ci.mongodb.net/?retryWrites=true&w=majority')
-    .then((dbRef)=>{
-        //connect to a database
-        const dbObj=dbRef.db('Users');
-        // Connect to collections of database
-        const eventsCollection=dbObj.collection('eventsCollection');
-        // Shre collection to API's
-        app.set('eventsCollection',eventsCollection);
-        // app.set('productCollectionObj',productCollectionObj);
-        console.log('DB connection success')
-    })
-    .catch(err=>console.log("database connect error:",err));
-
 // cnct();
 const app = express()
 app.use(express.json())
-app.use(express.urlencoded({ extended: false }))
+// app.use(express.urlencoded({ extended: false }))
 // app.use(morgan('dev'))
+app.use(cookieParser(process.env.COOKIE_SECRET))
 app.use(
   cors({
     origin: 'http://localhost:3000',
@@ -41,7 +28,7 @@ app.use(
     credentials: true,
   })
 )
-app.use(cookieParser(process.env.COOKIE_SECRET))
+
 
 app.get('/', async (req, res, next) => {
   res.send({ message: 'Awesome it works ' })
@@ -216,4 +203,16 @@ const invalidpathMiddleware=(request,response,next)=>{
 app.use("*",invalidpathMiddleware);
 
 const PORT = process.env.PORT || 3000
+mclient.connect('mongodb+srv://abhiram:6309422@cluster0.zgy92ci.mongodb.net/?retryWrites=true&w=majority')
+    .then((dbRef)=>{
+        //connect to a database
+        const dbObj=dbRef.db('Users');
+        // Connect to collections of database
+        const eventsCollection=dbObj.collection('eventsCollection');
+        // Shre collection to API's
+        app.set('eventsCollection',eventsCollection);
+        // app.set('productCollectionObj',productCollectionObj);
+        console.log('DB connection success')
+    })
+    .catch(err=>console.log("database connect error:",err));
 app.listen(PORT, () => console.log(`http://localhost:${PORT}`))
